@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import Gym.Management.facility.Equipment;
 import Gym.Management.facility.GymHall;
+import Gym.Management.papers.ExcelSheets;
 import Gym.Management.papers.ExercisePlan;
 import Gym.Management.papers.Subscription;
 import Gym.Management.people.Admin;
@@ -33,14 +34,15 @@ public class MainRun {
 		if(SearchData.checkAdmin(email) && SearchData.checkAdminPass(email, pass)) 
 		{
 			Admin admin = new Admin("Amr", 25, email, "01563248975", pass);
-			while(choice != 5 && subChoice != 5) {
+			while(choice != 6 && subChoice != 5) {
 				System.out.println("Hello Admin : " + admin.getPersonName());
 				System.out.println("Please Choose the data you want to deal with : ");
 				System.out.println("1-Trainer");
 				System.out.println("2-Trainee");
 				System.out.println("3-Gym Hall");
 				System.out.println("4-Gym Equipment");
-				System.out.println("5-Exit Program");
+				System.out.println("5-Attendance");
+				System.out.println("6-Exit Program");
 				choice = scanner.nextInt();
 				scanner.nextLine();
 				switch (choice) {
@@ -295,6 +297,83 @@ public class MainRun {
 					break;
 				}
 				case 5: {
+					//Attendance
+					System.out.println("Please Choose the data you want to deal with : ");
+					System.out.println("1-Trainer");
+					System.out.println("2-Trainee");
+					System.out.println("3-Search");
+					System.out.println("4-Back");
+					System.out.println("5-Exit Program");
+					subChoice = scanner.nextInt();
+					scanner.nextLine();
+					switch (subChoice) {
+					case 1: {
+						//Attendance for Trainers
+						System.out.println("Please Enter Trainer Email : ");
+						String tEmail = scanner.nextLine();
+						Trainer trainer = SearchData.searchTrainer(tEmail);
+						ExcelSheets.takeAttendace(trainer);
+						break;
+					}
+					case 2: {
+						//Attendance for Trainees
+						System.out.println("Please Enter Trainee Email : ");
+						String tEmail = scanner.nextLine();
+						Trainee trainee = SearchData.searchTrainee(tEmail);
+						ExcelSheets.takeAttendace(trainee);
+						break;
+					}
+					case 3: {
+						//Search
+						System.out.println("1-Trainer");
+						System.out.println("2-Trainee");
+						System.out.println("3-Back");
+						int subChoiceSearch = scanner.nextInt();
+						scanner.nextLine();
+						switch (subChoiceSearch) {
+						case 1: {
+							System.out.println("Please Enter Trainer Email : ");
+							String tEmail = scanner.nextLine();
+							Trainer trainer = SearchData.searchTrainer(tEmail);
+							System.out.println(trainer);
+							break;
+						}
+						case 2: {
+							System.out.println("Please Enter Trainee Email : ");
+							String tEmail = scanner.nextLine();
+							Trainee trainee = SearchData.searchTrainee(tEmail);
+							System.out.println(trainee);
+							break;
+						}
+						case 3: {
+							//Back
+							break;
+						}
+						default: {
+							System.out.println("Invalid Choice " + subChoice);
+							break;
+						}
+						}
+						break;
+					}
+					case 4: {
+						//Back
+						
+						break;
+					}
+					case 5: {
+						//Exit
+						
+						break;
+					}
+					default: {
+						System.out.println("Invalid Choice " + subChoice);
+						break;
+					}
+					}
+					break;
+				}
+				case 6: {
 					//Exit Program
 					
 					break;
@@ -315,10 +394,6 @@ public class MainRun {
 		//		System.out.print("\033[" + "2J");
 	}
 	
-	public static void addTrinerCommands() 
-	{
-		
-	}
 }
 
 

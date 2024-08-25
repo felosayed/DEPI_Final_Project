@@ -6,6 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+
+import Gym.Management.papers.ExercisePlan;
+import Gym.Management.papers.Subscription;
+import Gym.Management.people.Trainee;
+import Gym.Management.people.Trainer;
 
 public class SearchData {
 	
@@ -15,11 +21,25 @@ public class SearchData {
     static String password = "Amr_12saber";
 
     
-    public static void searchTrainee(int subID) 
+    public static Trainee searchTrainee(String traineeEmail) 
     {
+    	String tname = "";
+    	int tage = 0;
+    	String tphone = "";
+    	String tpassword = "";
+    	int sID = 0;
+    	String sType = "";
+    	LocalDate sStartDate = null;
+    	LocalDate sEndDate = null;
+    	int exID = 0;
+    	int exDuration = 0;
+    	int tpoints = 0;
+    	
     	// SQL SELECT query
-        String query = "SELECT Person.Name, Person.Email, Trainee.Points FROM Person "
-        		+ "INNER JOIN Trainee ON Person.Id = Trainee.Id WHERE Trainee.SubscriptionId = " + subID;
+        String query = "SELECT Person.Name, Person.Age, Person.PhoneNumber, Person.Password,"
+        		+ " Trainee.SubscriptionId, Trainee.ExercisePlanId, Trainee.Points"
+        		+ "FROM Person INNER JOIN Trainee ON Person.Id = Trainee.PersonId WHERE Person.Email = " + traineeEmail;
+        
         
         try {
             // Establish connection to the database
@@ -33,29 +53,61 @@ public class SearchData {
             
             // Iterate over the result set and print the results
             while (resultSet.next()) {
-                String column1 = resultSet.getString("Name");
-                String column2 = resultSet.getString("Email");
-                String column3 = resultSet.getString("Points");
-                
-                System.out.println("Name: " + column1 + "\nEmail: " + column2 + "\nPoints: " + column3);
+                tname = resultSet.getString("Name");
+                tage = resultSet.getInt("Agg");
+                tphone = resultSet.getString("PhoneNumber");
+                tpassword = resultSet.getString("Password");
+                sID = resultSet.getInt("SubscriptionId");
+                exID = resultSet.getInt("ExercisePlanId");
+                tpoints = resultSet.getInt("Points");
             }
+            String querySub = "SELECT Subscription.Type, Subscription.StartDate, Subscription.EndDate"
+            		+ " FROM Subscription WHERE Subscription.Id = " + sID;
             
+            String queryExplan = "SELECT ExercisePlan.Duration"
+            		+ " FROM ExercisePlan WHERE ExercisePlan.Id = " + exID;
+            
+            resultSet = statement.executeQuery(querySub);
+            while (resultSet.next()) {
+            	sType = resultSet.getString("Type");
+            	sStartDate = resultSet.getDate("StartDate").toLocalDate();
+            	sEndDate = resultSet.getDate("EndDate").toLocalDate();
+            }
+            resultSet = statement.executeQuery(queryExplan);
+            while (resultSet.next()) {
+            	exDuration = resultSet.getInt("Duration");
+            }
+            Subscription sub = new Subscription(sType);
+            sub.setStartDate(sStartDate);
+            sub.setEndtDate(sEndDate);
+            ExercisePlan plan = new ExercisePlan(exDuration);
+            Trainee t = new Trainee(tname, tage, traineeEmail, tphone, tpassword, sub, plan);
+            t.setPoints(tpoints);
             // Close the connection and other resources
             resultSet.close();
             statement.close();
             connection.close();
-            
+            return t;
         } catch (Exception e) {
-            e.printStackTrace();
+        	System.out.println(e.getMessage());
+            return null;
         }
     }
     
     //*****************************************************************************************************************//
-    public static void searchTrainer(int trainerID) 
+    public static Trainer searchTrainer(String trainerEmail) 
     {
+    	String tname = "";
+    	int tage = 0;
+    	double tsalary = 0.0;
+    	String tphone = "";
+    	String tpassword = "";
+    	int tWH = 0;
+    	int tAssignedHall = 0;
     	// SQL SELECT query
-        String query = "SELECT Person.Name, Person.Email, Trainer.Rating FROM Person "
-        		+ "INNER JOIN Trainer ON Person.Id = Trainer.Id WHERE Trainer.Id = " + trainerID;
+        String query = "SELECT Person.Name, Person.Age, Person.PhoneNumber, Person.Password"
+        		+ " Trainer.Salary, Trainer.WorkingHours, Trainer.GymHallId FROM Person "
+        		+ "INNER JOIN Trainer ON Person.Id = Trainer.PersonId WHERE Trainer.Email = " + trainerEmail;
         
         try {
             // Establish connection to the database
@@ -69,20 +121,24 @@ public class SearchData {
             
             // Iterate over the result set and print the results
             while (resultSet.next()) {
-                String column1 = resultSet.getString("Name");
-                String column2 = resultSet.getString("Email");
-                String column3 = resultSet.getString("Rating");
-                
-                System.out.println("Name: " + column1 + "\nEmail: " + column2 + "\nPoints: " + column3);
+            	tname = resultSet.getString("Name");
+            	tage = resultSet.getInt("Age");
+            	tphone = resultSet.getString("PhoneNumber");
+            	tpassword = resultSet.getString("Password");
+            	tsalary = resultSet.getDouble("Salary");
+            	tWH = resultSet.getInt("WorkingHours");
+            	tAssignedHall = resultSet.getInt("GymHallId");
             }
-            
+            Trainer t = new Trainer(tname, tage, tsalary, trainerEmail, tphone, tpassword, tWH, tAssignedHall);
             // Close the connection and other resources
             resultSet.close();
             statement.close();
             connection.close();
+            return t;
             
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return null;
         }
     }
     //*****************************************************************************************************************//
