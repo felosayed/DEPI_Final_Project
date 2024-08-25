@@ -37,8 +37,8 @@ public class SearchData {
     	
     	// SQL SELECT query
         String query = "SELECT Person.Name, Person.Age, Person.PhoneNumber, Person.Password,"
-        		+ " Trainee.SubscriptionId, Trainee.ExercisePlanId, Trainee.Points"
-        		+ "FROM Person INNER JOIN Trainee ON Person.Id = Trainee.PersonId WHERE Person.Email = " + traineeEmail;
+        		+ " Trainee.SubscriptionId, Trainee.ExercisePlanId, Trainee.Points "
+        		+ "FROM Person INNER JOIN Trainee ON Person.Id = Trainee.PersonId WHERE Person.Email = ?";
         
         
         try {
@@ -49,12 +49,14 @@ public class SearchData {
             Statement statement = connection.createStatement();
             
             // Execute the query and store the result
-            ResultSet resultSet = statement.executeQuery(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, traineeEmail);
+            ResultSet resultSet = preparedStatement.executeQuery();
             
             // Iterate over the result set and print the results
             while (resultSet.next()) {
                 tname = resultSet.getString("Name");
-                tage = resultSet.getInt("Agg");
+                tage = resultSet.getInt("Age");
                 tphone = resultSet.getString("PhoneNumber");
                 tpassword = resultSet.getString("Password");
                 sID = resultSet.getInt("SubscriptionId");
@@ -62,18 +64,23 @@ public class SearchData {
                 tpoints = resultSet.getInt("Points");
             }
             String querySub = "SELECT Subscription.Type, Subscription.StartDate, Subscription.EndDate"
-            		+ " FROM Subscription WHERE Subscription.Id = " + sID;
+            		+ " FROM Subscription WHERE Subscription.Id = ?";
             
             String queryExplan = "SELECT ExercisePlan.Duration"
-            		+ " FROM ExercisePlan WHERE ExercisePlan.Id = " + exID;
+            		+ " FROM ExercisePlan WHERE ExercisePlan.Id = ?";
             
-            resultSet = statement.executeQuery(querySub);
+            preparedStatement = connection.prepareStatement(querySub);
+            preparedStatement.setInt(1, sID);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
             	sType = resultSet.getString("Type");
             	sStartDate = resultSet.getDate("StartDate").toLocalDate();
             	sEndDate = resultSet.getDate("EndDate").toLocalDate();
             }
-            resultSet = statement.executeQuery(queryExplan);
+            
+            preparedStatement = connection.prepareStatement(queryExplan);
+            preparedStatement.setInt(1, exID);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
             	exDuration = resultSet.getInt("Duration");
             }
@@ -105,9 +112,9 @@ public class SearchData {
     	int tWH = 0;
     	int tAssignedHall = 0;
     	// SQL SELECT query
-        String query = "SELECT Person.Name, Person.Age, Person.PhoneNumber, Person.Password"
+        String query = "SELECT Person.Name, Person.Age, Person.PhoneNumber, Person.Password,"
         		+ " Trainer.Salary, Trainer.WorkingHours, Trainer.GymHallId FROM Person "
-        		+ "INNER JOIN Trainer ON Person.Id = Trainer.PersonId WHERE Trainer.Email = " + trainerEmail;
+        		+ "INNER JOIN Trainer ON Person.Id = Trainer.PersonId WHERE Person.Email = ?";
         
         try {
             // Establish connection to the database
@@ -117,7 +124,9 @@ public class SearchData {
             Statement statement = connection.createStatement();
             
             // Execute the query and store the result
-            ResultSet resultSet = statement.executeQuery(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, trainerEmail);
+            ResultSet resultSet = preparedStatement.executeQuery();
             
             // Iterate over the result set and print the results
             while (resultSet.next()) {

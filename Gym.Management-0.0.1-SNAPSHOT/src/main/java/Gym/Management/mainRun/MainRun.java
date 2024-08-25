@@ -1,5 +1,6 @@
 package Gym.Management.mainRun;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import Gym.Management.facility.Equipment;
@@ -12,6 +13,7 @@ import Gym.Management.people.Trainee;
 import Gym.Management.people.Trainer;
 import Gym.Management.sqlConnection.SQLConnection;
 import Gym.Management.sqlConnection.SearchData;
+import Gym.Management.sqlConnection.UpdateValues;
 
 public class MainRun {
 
@@ -154,7 +156,8 @@ public class MainRun {
 
 						SQLConnection.insertExercisePlan(exPlan);
 						SQLConnection.insertSubscription(sub);
-						SQLConnection.insertTrainee(trainee101);
+						//SQLConnection.insertTrainee(trainee101);
+						admin.addTrainee(trainee101);
 						break;
 					}
 					case 2: {
@@ -321,6 +324,26 @@ public class MainRun {
 						String tEmail = scanner.nextLine();
 						Trainee trainee = SearchData.searchTrainee(tEmail);
 						ExcelSheets.takeAttendace(trainee);
+						trainee.increasePoints(3);
+						UpdateValues.updatePoints(trainee);
+						if(trainee.getSubcription().getEndtDate() == LocalDate.now()) {
+							System.out.println("You need to Renew your Subscription. This is your last Day with this Subscription.");
+							System.out.println("Do you want to Renew ?? Y/N");
+							char answer = scanner.nextLine().toLowerCase().charAt(0);
+							switch (answer) {
+							case 'y': {
+								UpdateValues.renewSubscription(trainee);
+								break;
+							}
+							case 'n': {
+								System.out.println("You are welcome. Enjoy your day.");
+								break;
+							}
+							default:{
+								System.out.println("Invalid Answer.");
+							}
+							}
+						}
 						break;
 					}
 					case 3: {

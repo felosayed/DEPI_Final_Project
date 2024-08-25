@@ -72,4 +72,12 @@ public class Trainee extends Person{
 			this.setPoints(this.getPoints() + addPoints);
 		}
 	}
+	
+	
+	@Override
+	public String toString() 
+	{
+		return this.getSubcription().getSubscriptionType() + " Subscriper Mr/Ms " + this.getPersonName() + " : " + this.getPersonAge() + 
+				" years old. His/Her Email address : " + this.getPersonEmail() + " has : " + this.getPoints() + "Points";
+	}
 }

@@ -87,5 +87,10 @@ public class Trainer extends Person{
 		}
 	}
 	
-	
+	@Override
+	public String toString() 
+	{
+		return "Mr/Ms " + this.getPersonName() + " : " + this.getPersonAge() + " years old. His/Her Email address : "
+				+ this.getPersonEmail() + " with Rating : " + this.getRating();
+	}
 }
