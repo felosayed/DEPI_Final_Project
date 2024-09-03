@@ -169,7 +169,7 @@ public class SearchData {
                 //System.out.println("The email exists in the database.");
                 return true;
             } else {
-                System.out.println("The email does not exist in the database.");
+                //System.out.println("The email does not exist in the database.");
                 return false;
             }
 
@@ -203,7 +203,7 @@ public class SearchData {
                 	return false;
                 }
             } else {
-                System.out.println("The email does not exist in the database.");
+                //System.out.println("The email does not exist in the database.");
                 return false;
             }
 

@@ -407,6 +407,9 @@ public class MainRun {
 			}
 			System.out.println("Exiting Program :)");
 		}
+		else {
+			System.out.println("Invalid Email or Password.");
+		}
 
 		scanner.close();
 	}
